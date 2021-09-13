@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react'
 
 import Axios from 'axios';
@@ -25,30 +26,51 @@ const CreateUser = () => {
   }
 
   useEffect(() => {
-    getUsers()
+    getUsers();
+    
   }, [setUsers]);
-const onChangeUserName = (e)=>{
-  setUserName(e.target.value);
+
+ //este es una propertyisenumerable
+ const handleSubmit = (e) => {
   e.preventDefault();
-}
+  if (userName) {
+    // const person = { id: new Date().getTime().toString(), firstName, email };
+    // console.log(person);
+    // setPeople((people) => {
+    //   return [...people, person];
+    // });
+    // setUserName('');
+  
+  } else {
+    console.log('empty values');
+  }
+};
+
+ //este finaliza 
+
   
 
-  console.log(users);
+  // console.log(users);
 
- 
-  return (
+   return (
     <div className="row">
       
       <h2>{loading ? 'loading...' : 'data'}</h2>
       <div className="col-md-4">
         <div className="card card-body">
           <h3>Create new User</h3>
-          <form>
-        <input 
-        type="text" 
-        className="form-control"  
-        
-  onChange={onChangeUserName} />
+          <form onSubmit={handleSubmit}>
+          <div className='form-control'>
+            <label htmlFor='userName'>userName : </label>
+            <input
+              type='userName'
+              id='userName'
+              name='userName'
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+          </div>
+          <button type='submit'>add person</button>
           </form>
         </div>
       </div>
