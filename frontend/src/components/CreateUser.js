@@ -8,7 +8,7 @@ import Axios from "axios";
 
 const CreateUser = () => {
   // varibles de estado
-  const url = "http://localhost:4000/api/users";
+  const url = "http://localhost:4000/api/users/";
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   //*************************** */
@@ -24,6 +24,10 @@ const CreateUser = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+  const userDelete = async (id) => {
+    await Axios.delete(url + id);
+    getUsers();
   };
 
   useEffect(() => {
@@ -42,9 +46,6 @@ const CreateUser = () => {
       console.log("empty values");
     }
     getUsers();
-  };
-  const userDelete = (id) => {
-    console.log(id);
   };
 
   return (
