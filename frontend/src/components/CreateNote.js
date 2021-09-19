@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 function CreateNote() {
   const url = "http://localhost:4000/api/users/";
+  const url1 = "http://localhost:4000/api/notes/";
   const [users, setUser] = useState([]);
   const [userSelected, setUserSelected] = useState("");
   const [startDate, setStartDate] = useState(new Date());
@@ -13,25 +14,40 @@ function CreateNote() {
     const res = await Axios.get(url);
     const data = await res.data;
     setUser(data);
+    setUserSelected(data[0].username); //iniciliza usuario por defecto
   };
   //  se llama los datos al montar el componente
   useEffect(() => {
     getUsers();
   }, [setUser]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const newNote = {
+      title: title,
+      content: content,
+      date: startDate,
+      author: userSelected,
+    };
+    const res = await Axios.post(url1, newNote);
+    console.log(res);
+    setTitle("");
+    setContent(""); //limpia el formulario
   };
   const handleInputChange = (e) => {
+    e.preventDefault();
     // console.log(e.target.value, e.target.name);
     if (e.target.name === "title") {
       setTitle(e.target.value);
     } else if (e.target.name === "content") {
       setContent(e.target.value);
     } else if (e.target.name === "userSelected") {
+      if (e.target.value === null) {
+      }
       setUserSelected(e.target.value);
+      setStartDate();
     }
-    console.log(title);
+    console.log(e.target.value);
   };
   return (
     <div className="col-md-6 offset-md-3">
@@ -56,11 +72,6 @@ function CreateNote() {
             onChange={handleInputChange}
           />
         </div>
-        <DatePicker
-          className="form-control"
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-        />
 
         <form onSubmit={handleSubmit}>
           <select
@@ -74,7 +85,11 @@ function CreateNote() {
               </option>
             ))}
           </select>
-
+          <DatePicker
+            className="form-control"
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+          />
           <button type="submit" className="btn btn-primary">
             Save
           </button>
