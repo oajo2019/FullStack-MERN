@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-function CreateNote() {
+function CreateNote(props) {
   const url = "http://localhost:4000/api/users/";
   const url1 = "http://localhost:4000/api/notes/";
   const [users, setUser] = useState([]);
@@ -15,6 +15,9 @@ function CreateNote() {
     const data = await res.data;
     setUser(data);
     setUserSelected(data[0].username); //iniciliza usuario por defecto
+    // if (this.props.match.params.id) {
+    //   console.log(this.props.match.params.id);
+    // }
   };
   //  se llama los datos al montar el componente
   useEffect(() => {
@@ -33,6 +36,7 @@ function CreateNote() {
     console.log(res);
     setTitle("");
     setContent(""); //limpia el formulario
+    window.location.href = "/";
   };
   const handleInputChange = (e) => {
     e.preventDefault();
@@ -85,11 +89,13 @@ function CreateNote() {
               </option>
             ))}
           </select>
-          <DatePicker
-            className="form-control"
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-          />
+          <div className="form-group">
+            <DatePicker
+              className="form-control"
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+            />
+          </div>
           <button type="submit" className="btn btn-primary">
             Save
           </button>
