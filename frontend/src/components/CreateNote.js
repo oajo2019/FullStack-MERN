@@ -10,14 +10,25 @@ function CreateNote(props) {
   const [startDate, setStartDate] = useState(new Date());
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [_id, setId] = useState("");
   const getUsers = async () => {
     const res = await Axios.get(url);
     const data = await res.data;
     setUser(data);
     setUserSelected(data[0].username); //iniciliza usuario por defecto
-    // if (this.props.match.params.id) {
-    //   console.log(this.props.match.params.id);
-    // }
+    if (props.match.params.id) {
+      const edit = await Axios.get(url1 + props.match.params.id);
+      const res = await edit.data;
+      setEditing(true);
+
+      setId(props.match.params.id);
+      setTitle(edit.data.title);
+      setContent(edit.data.content);
+      setStartDate(new Date(edit.data.date));
+      setUserSelected(edit.data.author);
+      console.log(edit.data.title);
+    }
   };
   //  se llama los datos al montar el componente
   useEffect(() => {
@@ -26,16 +37,23 @@ function CreateNote(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // depende si quiere editar
     const newNote = {
       title: title,
       content: content,
       date: startDate,
       author: userSelected,
     };
-    const res = await Axios.post(url1, newNote);
-    console.log(res);
-    setTitle("");
-    setContent(""); //limpia el formulario
+    if (editing) {
+      await Axios.put(url1 + _id, newNote);
+      setEditing(false);
+    } else {
+      const res = await Axios.post(url1, newNote);
+      // console.log(res);
+    }
+
+    // setTitle("");
+    // setContent(""); //limpia el formulario
     window.location.href = "/";
   };
   const handleInputChange = (e) => {
@@ -51,7 +69,7 @@ function CreateNote(props) {
       setUserSelected(e.target.value);
       setStartDate();
     }
-    console.log(e.target.value);
+    // console.log(e.target.value);
   };
   return (
     <div className="col-md-6 offset-md-3">
